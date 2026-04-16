@@ -62,3 +62,4 @@ app.get('/api/classify', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}`);
 })
+
