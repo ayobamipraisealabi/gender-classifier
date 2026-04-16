@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Classifier</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        input, button { padding: 10px; margin: 10px 0; }
+        #result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Gender Classifier</h1>
+    <p>Enter a first name to predict the gender:</p>
+    <input type="text" id="nameInput" placeholder="Enter name">
+    <button onclick="classifyName()">Classify</button>
+    <div id="result"></div>
+
+    <script>
+        async function classifyName() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (!name) {
+                document.getElementById('result').innerText = 'Please enter a name.';
+                return;
+            }
+            try {
+                const response = await fetch(`/api/classify?name=${encodeURIComponent(name)}`);
+                const data = await response.json();
+                if (data.status === 'success') {
+                    const { name: n, gender, probability, sample_size, is_confident } = data.data;
+                    document.getElementById('result').innerHTML = `
+                        <strong>Name:</strong> ${n}<br>
+                        <strong>Gender:</strong> ${gender}<br>
+                        <strong>Probability:</strong> ${(probability * 100).toFixed(1)}%<br>
+                        <strong>Sample Size:</strong> ${sample_size}<br>
+                        <strong>Confident:</strong> ${is_confident ? 'Yes' : 'No'}
+                    `;
+                } else {
+                    document.getElementById('result').innerText = `Error: ${data.message}`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerText = 'Error fetching data.';
+            }
+        }
+    </script>
+</body>
+</html>
