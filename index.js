@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const serverless = require('serverless-http');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -60,5 +60,5 @@ app.get('/api/classify', async (req, res) => {
     }
 });
 
-module.exports = serverless(app);
+module.exports = app;
 
